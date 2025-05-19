@@ -11,7 +11,15 @@ memory = MoralMemory()
 # Input form
 with st.form("dilemma_form"):
     dilemma = st.text_area("Enter a moral dilemma:")
-    framework = st.selectbox("Choose ethical framework:", ["Utilitarianism", "Deontology", "Virtue Ethics"])
+    framework = st.selectbox("Choose ethical framework:", [
+        "Utilitarianism",
+        "Deontology",
+        "Virtue Ethics",
+        "Care Ethics",
+        "Moral Relativism",
+        "Contractualism",
+        "Divine Command Theory"
+    ])
     submitted = st.form_submit_button("Analyze")
 
 # Handle form submission

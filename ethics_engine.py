@@ -6,17 +6,30 @@ load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def get_moral_judgment(dilemma, framework):
+    framework_definitions = {
+        "Utilitarianism": "Choose the action that maximizes overall happiness and minimizes suffering.",
+        "Deontology": "Follow moral duties and rules, regardless of consequences.",
+        "Virtue Ethics": "Emphasize character and virtues, not just actions.",
+        "Care Ethics": "Prioritize relationships, empathy, and care for others.",
+        "Moral Relativism": "Judge actions relative to cultural or individual norms.",
+        "Contractualism": "Choose actions that could be justified to others under reasonable agreement.",
+        "Divine Command Theory": "Follow what is commanded by a divine being or scripture."
+    }
+
+    definition = framework_definitions.get(framework, "")
     prompt = f"""
-You are a moral philosopher responding to the following dilemma using {framework}:
+    You are a moral philosopher responding to the following dilemma using {framework}.
 
-Dilemma: {dilemma}
+    Definition of {framework}: {definition}
 
-1. What is the ethically appropriate action?
-2. Justify it according to the principles of {framework}.
-Return your answer as:
-- Judgment:
-- Justification:
-"""
+    Dilemma: {dilemma}
+
+    1. What is the ethically appropriate action?
+    2. Justify it according to the principles of {framework}.
+    Return your answer as:
+    - Judgment:
+    - Justification:
+    """
 
     try:
         response = client.chat.completions.create(
