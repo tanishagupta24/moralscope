@@ -2,8 +2,8 @@ import streamlit as st
 from ethics_engine import get_moral_judgment
 from memory import MoralMemory
 
-st.set_page_config(page_title="MoralScope", page_icon="🧠")
-st.title("🧠 MoralScope: Autonomous Moral Philosophy Explorer")
+st.set_page_config(page_title="MoralScope", page_icon="📖")
+st.title("📖 MoralScope: Autonomous Moral Philosophy Explorer")
 
 # Initialize moral memory
 memory = MoralMemory()
@@ -11,28 +11,31 @@ memory = MoralMemory()
 # Input form
 with st.form("dilemma_form"):
     dilemma = st.text_area("Enter a moral dilemma:")
-    framework = st.selectbox("Choose ethical framework:", [
-        "Utilitarianism",
-        "Deontology",
-        "Virtue Ethics",
-        "Care Ethics",
-        "Moral Relativism",
-        "Contractualism",
-        "Divine Command Theory"
-    ])
+    frameworks = st.multiselect(
+        "Choose one or more ethical frameworks to compare:",
+        [
+            "Utilitarianism",
+            "Deontology",
+            "Virtue Ethics",
+            "Care Ethics",
+            "Moral Relativism",
+            "Contractualism",
+            "Divine Command Theory"
+        ],
+        default=["Utilitarianism", "Deontology"]
+    )
     submitted = st.form_submit_button("Analyze")
 
-# Handle form submission
-if submitted and dilemma:
-    judgment, justification = get_moral_judgment(dilemma, framework)
-    memory.store_judgment(dilemma, framework, judgment, justification)
+if submitted and dilemma and frameworks:
+    tabs = st.tabs([f"{fw}" for fw in frameworks])
 
-    st.subheader("🧾 Judgment:")
-    st.write(judgment)
+    for i, fw in enumerate(frameworks):
+        with tabs[i]:
+            judgment, justification = get_moral_judgment(dilemma, fw)
+            memory.store_judgment(dilemma, fw, judgment, justification)
 
-    st.subheader("📚 Justification:")
-    st.write(justification)
+            st.subheader("Judgment")
+            st.write(judgment)
 
-    st.subheader("🧠 Memory (Past dilemmas):")
-    for item in memory.past_judgments:
-        st.markdown(f"- **{item['framework']}** on *{item['dilemma'][:60]}...*: {item['judgment']}")
+            st.subheader("Justification")
+            st.write(justification)
