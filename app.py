@@ -1,6 +1,7 @@
 import streamlit as st
 from ethics_engine import get_moral_judgment
 from memory import MoralMemory
+from philosophy_loader import extract_text_from_pdf
 
 st.set_page_config(page_title="MoralScope", page_icon="📖")
 st.title("📖 MoralScope: Autonomous Moral Philosophy Explorer")
@@ -39,3 +40,13 @@ if submitted and dilemma and frameworks:
 
             st.subheader("Justification")
             st.write(justification)
+
+st.sidebar.subheader("Upload Philosophy PDFs")
+uploaded_files = st.sidebar.file_uploader("Upload PDF(s)", type="pdf", accept_multiple_files=True)
+
+philosophy_corpus = ""
+
+if uploaded_files:
+    for uploaded_file in uploaded_files:
+        text = extract_text_from_pdf(uploaded_file)
+        philosophy_corpus += f"\n\n--- FROM: {uploaded_file.name} ---\n\n{text}"
